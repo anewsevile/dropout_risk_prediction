@@ -237,6 +237,7 @@ try:
     scaler = artifacts['scaler']
     ordinal_encoder = artifacts['ordinal_encoder']
     dept_encoder = artifacts['dept_encoder']
+    category_encoder = artifacts['category_encoder']
     target_encoder = artifacts['target_encoder']
 
     # Explicit Model Validation & Casting Check
@@ -254,7 +255,7 @@ try:
     ]
     
     # Check for required columns
-    required_cols = num_cols + ['department', 'socio_economic_proxy']
+    required_cols = num_cols + ['department', 'socio_economic_proxy', 'student_category']
     missing_cols = [c for c in required_cols if c not in df.columns]
     if missing_cols:
         raise ValueError(f"Dataset is missing required columns: {missing_cols}")
@@ -266,6 +267,7 @@ try:
     # Encode categorical features
     X_prep['department'] = dept_encoder.transform(df['department'])
     X_prep['socio_economic_proxy'] = ordinal_encoder.transform(df[['socio_economic_proxy']]).ravel()
+    X_prep['student_category'] = category_encoder.transform(df['student_category'])
 
     # Align columns with model expectation
     feature_names = list(model_obj.feature_names_in_)
