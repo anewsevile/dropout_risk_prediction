@@ -508,6 +508,45 @@ if page == "Overview":
         st.pyplot(fig2)
         st.markdown("</div>", unsafe_allow_html=True)
 
+        st.markdown("<div class='brutalist-divider'></div>", unsafe_allow_html=True)
+
+        st.markdown("<div class='brutalist-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 class='brutalist-title'>SEMESTER RISK TREND</h3>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size:0.8rem; color:#1A1A1A; font-weight:500; margin-bottom:12px;'>Average predicted risk score by academic year (cohort-level trend).</p>", unsafe_allow_html=True)
+
+        risk_map = {'Low': 0, 'Medium': 1, 'High': 2}
+        df['risk_numeric'] = df['predicted_risk'].map(risk_map)
+        trend_data = df.groupby('year')['risk_numeric'].mean().sort_index()
+
+        fig3, ax3 = plt.subplots(figsize=(10, 3.5))
+        fig3.patch.set_facecolor('#FFFFFF')
+        ax3.set_facecolor('#FFFFFF')
+
+        ax3.plot(trend_data.index, trend_data.values, color='#1A1A1A', linewidth=3,
+                 marker='o', markersize=10, markerfacecolor='#E8C547', markeredgecolor='#1A1A1A', markeredgewidth=2)
+
+        ax3.set_xticks(trend_data.index)
+        ax3.set_xticklabels([f'Year {int(y)}' for y in trend_data.index], fontweight='bold', fontsize=10)
+        ax3.set_ylim(-0.2, 2.2)
+        ax3.set_yticks([0, 1, 2])
+        ax3.set_yticklabels(['Low', 'Medium', 'High'], fontweight='bold', fontsize=10)
+
+        for x, y in zip(trend_data.index, trend_data.values):
+            ax3.text(x, y + 0.15, f'{y:.2f}', ha='center', fontweight='bold', fontsize=10, color='#1A1A1A')
+
+        ax3.spines['top'].set_visible(False)
+        ax3.spines['right'].set_visible(False)
+        ax3.spines['bottom'].set_color('#1A1A1A')
+        ax3.spines['left'].set_color('#1A1A1A')
+        ax3.spines['bottom'].set_linewidth(2)
+        ax3.spines['left'].set_linewidth(2)
+        ax3.tick_params(colors='#1A1A1A', width=2)
+        ax3.grid(axis='y', color='#E5E5E5', linewidth=1, linestyle='--')
+
+        plt.tight_layout()
+        st.pyplot(fig3)
+        st.markdown("</div>", unsafe_allow_html=True)
+
     except Exception as e:
         st.error(f"Error rendering Overview page: {str(e)}")
 
@@ -620,6 +659,49 @@ elif page == "Individual Student Profile":
         m3.markdown(f"<div class='stat-card'><div class='stat-label'>BACKLOGS</div><div class='stat-value'>{student['backlogs']}</div></div>", unsafe_allow_html=True)
         m4.markdown(f"<div class='stat-card'><div class='stat-label'>ASSIGNMENTS</div><div class='stat-value'>{student['assignment_submission_rate']}%</div></div>", unsafe_allow_html=True)
         
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown("<div class='brutalist-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 class='brutalist-title'>RISK VS. YEAR COHORT AVERAGE</h3>", unsafe_allow_html=True)
+        st.markdown(f"<p style='font-size:0.8rem; color:#1A1A1A; font-weight:500; margin-bottom:12px;'>How {student['name']} compares to the average student in Year {int(student['year'])}.</p>", unsafe_allow_html=True)
+
+        risk_map = {'Low': 0, 'Medium': 1, 'High': 2}
+        df['risk_numeric'] = df['predicted_risk'].map(risk_map)
+        trend_data = df.groupby('year')['risk_numeric'].mean().sort_index()
+        student_risk_numeric = risk_map[student['predicted_risk']]
+
+        fig4, ax4 = plt.subplots(figsize=(10, 3.5))
+        fig4.patch.set_facecolor('#FFFFFF')
+        ax4.set_facecolor('#FFFFFF')
+
+        ax4.plot(trend_data.index, trend_data.values, color='#1A1A1A', linewidth=3,
+                 marker='o', markersize=8, markerfacecolor='#FFFFFF', markeredgecolor='#1A1A1A', markeredgewidth=2,
+                 label='Year Average', zorder=2)
+
+        ax4.scatter([student['year']], [student_risk_numeric], color='#E8C547', edgecolor='#1A1A1A',
+                    linewidth=2.5, s=250, zorder=3, label=student['name'])
+
+        ax4.set_xticks(trend_data.index)
+        ax4.set_xticklabels([f'Year {int(y)}' for y in trend_data.index], fontweight='bold', fontsize=10)
+        ax4.set_ylim(-0.2, 2.2)
+        ax4.set_yticks([0, 1, 2])
+        ax4.set_yticklabels(['Low', 'Medium', 'High'], fontweight='bold', fontsize=10)
+
+        ax4.spines['top'].set_visible(False)
+        ax4.spines['right'].set_visible(False)
+        ax4.spines['bottom'].set_color('#1A1A1A')
+        ax4.spines['left'].set_color('#1A1A1A')
+        ax4.spines['bottom'].set_linewidth(2)
+        ax4.spines['left'].set_linewidth(2)
+        ax4.tick_params(colors='#1A1A1A', width=2)
+        ax4.grid(axis='y', color='#E5E5E5', linewidth=1, linestyle='--')
+        legend = ax4.legend(loc='upper left', frameon=True, edgecolor='#1A1A1A', fontsize=9,
+                             fancybox=False, borderpad=0.8, handletextpad=0.6)
+        legend.get_frame().set_linewidth(2)
+        legend.get_frame().set_facecolor('#FFFFFF')
+
+        plt.tight_layout()
+        st.pyplot(fig4)
         st.markdown("</div>", unsafe_allow_html=True)
 
     except Exception as e:
