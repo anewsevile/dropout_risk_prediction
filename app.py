@@ -586,12 +586,12 @@ elif page == "Model Intelligence":
         st.markdown("<h1 class='brutalist-title'>MODEL INTELLIGENCE</h1>", unsafe_allow_html=True)
         st.markdown("<p style='font-size: 1rem; color: #1A1A1A; font-weight: 500; margin-bottom: 20px;'>Gradient Boosting model metrics, weights, and evaluation table.</p>", unsafe_allow_html=True)
 
-        y_true = df['dropout_risk_label']
-        y_pred = df['predicted_risk']
 
-        acc = accuracy_score(y_true, y_pred)
-        prec = precision_score(y_true, y_pred, average='macro')
-        rec = recall_score(y_true, y_pred, average='macro')
+        eval_metrics = artifacts['eval_metrics']
+        acc = eval_metrics['accuracy']
+        prec = eval_metrics['precision']
+        rec = eval_metrics['recall']
+        
 
         c1, c2, c3 = st.columns(3)
         with c1:
@@ -660,8 +660,8 @@ elif page == "Model Intelligence":
             st.markdown("<div class='brutalist-card'>", unsafe_allow_html=True)
             st.markdown("<h3 class='brutalist-title'>CONFUSION MATRIX</h3>", unsafe_allow_html=True)
 
-            labels = ['High', 'Medium', 'Low']
-            cm = confusion_matrix(y_true, y_pred, labels=labels)
+            labels = eval_metrics['cm_labels']
+            cm = eval_metrics['confusion_matrix']
             cm_df = pd.DataFrame(cm, index=[f"ACTUAL {l}" for l in labels], columns=[f"PRED {l}" for l in labels])
 
             st.table(cm_df)
