@@ -460,6 +460,54 @@ if page == "Overview":
         st.pyplot(fig)
         st.markdown("</div>", unsafe_allow_html=True)
 
+        st.markdown("<div class='brutalist-divider'></div>", unsafe_allow_html=True)
+
+        st.markdown("<div class='brutalist-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 class='brutalist-title'>DEPARTMENT-WISE RISK HEATMAP</h3>", unsafe_allow_html=True)
+
+        from matplotlib.colors import LinearSegmentedColormap
+
+        heat_data = pd.crosstab(df['department'], df['predicted_risk'])
+        for level in ['Low', 'Medium', 'High']:
+            if level not in heat_data.columns:
+                heat_data[level] = 0
+        heat_data = heat_data[['Low', 'Medium', 'High']]
+
+        brutal_cmap = LinearSegmentedColormap.from_list(
+            'brutal', ['#FFFFFF', '#E8C547', '#1A1A1A']
+        )
+
+        fig2, ax2 = plt.subplots(figsize=(8, max(3, 0.5 * len(heat_data))))
+        fig2.patch.set_facecolor('#FFFFFF')
+        ax2.set_facecolor('#FFFFFF')
+
+        im = ax2.imshow(heat_data.values, cmap=brutal_cmap, aspect='auto')
+
+        ax2.set_xticks(range(len(heat_data.columns)))
+        ax2.set_xticklabels(heat_data.columns, fontweight='bold', fontsize=10)
+        ax2.set_yticks(range(len(heat_data.index)))
+        ax2.set_yticklabels(heat_data.index, fontweight='bold', fontsize=10)
+
+        for i in range(len(heat_data.index)):
+            for j in range(len(heat_data.columns)):
+                val = heat_data.values[i, j]
+                text_color = '#FFFFFF' if val > heat_data.values.max() * 0.6 else '#1A1A1A'
+                ax2.text(j, i, str(val), ha='center', va='center',
+                          color=text_color, fontweight='bold', fontsize=11)
+
+        for spine in ax2.spines.values():
+            spine.set_color('#1A1A1A')
+            spine.set_linewidth(2)
+
+        ax2.set_xticks([x - 0.5 for x in range(1, len(heat_data.columns))], minor=True)
+        ax2.set_yticks([y - 0.5 for y in range(1, len(heat_data.index))], minor=True)
+        ax2.grid(which='minor', color='#1A1A1A', linewidth=2)
+        ax2.tick_params(which='minor', bottom=False, left=False)
+
+        plt.tight_layout()
+        st.pyplot(fig2)
+        st.markdown("</div>", unsafe_allow_html=True)
+
     except Exception as e:
         st.error(f"Error rendering Overview page: {str(e)}")
 
