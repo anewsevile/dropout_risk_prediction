@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, confusion_matrix
+from fpdf import FPDF
 
 # =====================================================================
 # PAGE CONFIG
@@ -169,7 +170,7 @@ st.markdown("""
     }
     
     /* Buttons */
-    .stButton > button {
+     .stDownloadButton, .stDownloadButton > button, .stDownloadButton button {
         background-color: #E8C547 !important;
         color: #1A1A1A !important;
         font-family: 'Space Grotesk', sans-serif !important;
@@ -178,6 +179,9 @@ st.markdown("""
         border: 2px solid #1A1A1A !important;
         border-radius: 0px !important;
         padding: 8px 16px !important;
+    }
+    .stDownloadButton * {
+        color: #1A1A1A !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -367,7 +371,7 @@ st.sidebar.markdown("<p style='font-size:0.8rem; font-weight:600; color:#1A1A1A;
 
 page = st.sidebar.radio(
     "NAVIGATION",
-    ["Overview", "Student Risk Directory", "Individual Student Profile", "Model Intelligence"],
+    ["Overview", "Student Risk Directory", "Individual Student Profile", "Model Intelligence", "HOD Report"],
     index=0
 )
 
@@ -799,3 +803,138 @@ elif page == "Model Intelligence":
 
     except Exception as e:
         st.error(f"Error rendering Model Intelligence: {str(e)}")
+
+# =====================================================================
+# PAGE 4: HOD REPORT
+# =====================================================================
+elif page == "HOD Report":
+    try:
+        st.markdown("<h1 class='brutalist-title'>HOD SUMMARY REPORT</h1>", unsafe_allow_html=True)
+        st.markdown("<p style='font-size: 1rem; color: #1A1A1A; font-weight: 500; margin-bottom: 20px;'>Department-level risk summary for faculty and Head of Department review.</p>", unsafe_allow_html=True)
+
+        dept_options = ["All Departments"] + sorted(df['department'].unique().tolist())
+        selected_dept = st.selectbox("SELECT DEPARTMENT", dept_options)
+
+        if selected_dept == "All Departments":
+            report_df = df.copy()
+        else:
+            report_df = df[df['department'] == selected_dept].copy()
+
+        total = len(report_df)
+        high_count = int((report_df['predicted_risk'] == 'High').sum())
+        med_count = int((report_df['predicted_risk'] == 'Medium').sum())
+        low_count = int((report_df['predicted_risk'] == 'Low').sum())
+
+        c1, c2, c3, c4 = st.columns(4)
+        c1.markdown(f"<div class='stat-card'><div class='stat-label'>TOTAL STUDENTS</div><div class='stat-value'>{total}</div></div>", unsafe_allow_html=True)
+        c2.markdown(f"<div class='stat-card'><div class='stat-label'>HIGH RISK</div><div class='stat-value'>{high_count}</div></div>", unsafe_allow_html=True)
+        c3.markdown(f"<div class='stat-card'><div class='stat-label'>MEDIUM RISK</div><div class='stat-value'>{med_count}</div></div>", unsafe_allow_html=True)
+        c4.markdown(f"<div class='stat-card'><div class='stat-label'>LOW RISK</div><div class='stat-value'>{low_count}</div></div>", unsafe_allow_html=True)
+
+        st.markdown("<div class='brutalist-divider'></div>", unsafe_allow_html=True)
+
+        st.markdown("<div class='brutalist-card'>", unsafe_allow_html=True)
+        st.markdown(f"<h3 class='brutalist-title'>RISK BREAKDOWN — {selected_dept.upper()}</h3>", unsafe_allow_html=True)
+
+        counts = report_df['predicted_risk'].value_counts().reindex(['Low', 'Medium', 'High']).fillna(0)
+        fig5, ax5 = plt.subplots(figsize=(10, 3))
+        fig5.patch.set_facecolor('#FFFFFF')
+        ax5.set_facecolor('#FFFFFF')
+        bars5 = ax5.barh(counts.index, counts.values, height=0.55)
+        bars5[0].set_color('#FFFFFF'); bars5[0].set_edgecolor('#1A1A1A'); bars5[0].set_linewidth(2)
+        bars5[1].set_color('#E8C547'); bars5[1].set_edgecolor('#1A1A1A'); bars5[1].set_linewidth(2)
+        bars5[2].set_color('#1A1A1A')
+        ax5.spines['top'].set_visible(False)
+        ax5.spines['right'].set_visible(False)
+        ax5.spines['bottom'].set_color('#1A1A1A'); ax5.spines['left'].set_color('#1A1A1A')
+        ax5.spines['bottom'].set_linewidth(2); ax5.spines['left'].set_linewidth(2)
+        ax5.tick_params(colors='#1A1A1A', labelsize=10, width=2)
+        for label in ax5.get_yticklabels():
+            label.set_fontweight('bold')
+        for bar in bars5:
+            w = bar.get_width()
+            ax5.text(w + 2, bar.get_y() + bar.get_height()/2, f'{int(w)}', va='center', ha='left', color='#1A1A1A', fontweight='bold', fontsize=11)
+        plt.tight_layout()
+        st.pyplot(fig5)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown("<div class='brutalist-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 class='brutalist-title'>STUDENTS REQUIRING CONSULTATION</h3>", unsafe_allow_html=True)
+
+        high_risk_students = report_df[report_df['predicted_risk'] == 'High'].sort_values('risk_score', ascending=False)
+
+        if len(high_risk_students) == 0:
+            st.markdown("<p style='font-weight:600; color:#1A1A1A;'>No High-risk students in this selection. ✅</p>", unsafe_allow_html=True)
+        else:
+            consult_rows = []
+            for _, srow in high_risk_students.iterrows():
+                expl, _ = calculate_top_factors_and_intervention(srow, model_obj)
+                consult_rows.append({
+                    "Student": srow['name'],
+                    "ID": srow['student_id'],
+                    "Year": int(srow['year']),
+                    "Risk Score": srow['risk_score'],
+                    "Primary Concern": expl
+                })
+            consult_df = pd.DataFrame(consult_rows)
+            st.dataframe(consult_df, use_container_width=True, hide_index=True)
+
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("<div class='brutalist-card'>", unsafe_allow_html=True)
+        st.markdown("<h3 class='brutalist-title'>DOWNLOAD REPORT</h3>", unsafe_allow_html=True)
+
+        def generate_pdf_report(dept_name, total, high_c, med_c, low_c, students_df):
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Helvetica", "B", 18)
+            pdf.cell(0, 12, "EARLY DROPOUT RISK - HOD SUMMARY REPORT", ln=True)
+            pdf.set_font("Helvetica", "", 11)
+            pdf.cell(0, 8, f"Department: {dept_name}", ln=True)
+            pdf.ln(4)
+
+            pdf.set_font("Helvetica", "B", 12)
+            pdf.cell(0, 8, "OVERVIEW", ln=True)
+            pdf.set_font("Helvetica", "", 11)
+            pdf.cell(0, 7, f"Total Students: {total}", ln=True)
+            pdf.cell(0, 7, f"High Risk: {high_c}   Medium Risk: {med_c}   Low Risk: {low_c}", ln=True)
+            pdf.ln(6)
+
+            pdf.set_font("Helvetica", "B", 12)
+            pdf.cell(0, 8, "STUDENTS REQUIRING CONSULTATION", ln=True)
+            pdf.set_font("Helvetica", "", 10)
+
+            if len(students_df) == 0:
+                pdf.cell(0, 7, "No High-risk students in this selection.", ln=True)
+            else:
+                pdf.set_font("Helvetica", "B", 9)
+                pdf.cell(45, 7, "Student", border=1)
+                pdf.cell(25, 7, "ID", border=1)
+                pdf.cell(15, 7, "Year", border=1)
+                pdf.cell(25, 7, "Score", border=1)
+                pdf.cell(80, 7, "Primary Concern", border=1, ln=True)
+                pdf.set_font("Helvetica", "", 9)
+                for _, r in students_df.iterrows():
+                    pdf.cell(45, 7, str(r["Student"])[:22], border=1)
+                    pdf.cell(25, 7, str(r["ID"]), border=1)
+                    pdf.cell(15, 7, str(r["Year"]), border=1)
+                    pdf.cell(25, 7, str(r["Risk Score"]), border=1)
+                    pdf.cell(80, 7, str(r["Primary Concern"])[:45], border=1, ln=True)
+
+            return bytes(pdf.output())
+
+        pdf_bytes = generate_pdf_report(
+            selected_dept, total, high_count, med_count, low_count,
+            consult_df if len(high_risk_students) > 0 else pd.DataFrame(columns=["Student","ID","Year","Risk Score","Primary Concern"])
+        )
+
+        st.download_button(
+            label="DOWNLOAD REPORT",
+            data=pdf_bytes,
+            file_name=f"HOD_Report_{selected_dept.replace(' ', '_')}.pdf",
+            mime="application/pdf"
+        )
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    except Exception as e:
+        st.error(f"Error rendering HOD Report: {str(e)}")
