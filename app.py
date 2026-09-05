@@ -389,8 +389,7 @@ st.sidebar.markdown("<div class='brutalist-divider'></div>", unsafe_allow_html=T
 st.sidebar.markdown("""
 <div style='font-size: 0.75rem; font-weight:600;'>
     SYSTEM: ACTIVE<br>
-    MODEL: GRADIENT BOOSTING<br>
-    DESIGN: SOFT BRUTALISM
+    MODEL: GRADIENT BOOSTING
 </div>
 """, unsafe_allow_html=True)
 
