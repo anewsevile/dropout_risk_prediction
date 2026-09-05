@@ -3,14 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DROPOUT RISK — ML Early Warning System for Indian Higher Ed</title>
-  <meta name="description" content="ML-powered early warning system that predicts student dropout risk in Indian higher education institutions. Built for Avishkar 2026 at Pillai HOC College.">
-  <meta name="keywords" content="Dropout Risk, Machine Learning, Indian Higher Education, Pillai HOC College, Avishkar 2026, Early Warning System, scikit-learn, Streamlit, Student Analytics">
+  <title>SAARTHI — ML Early Warning System for Indian Higher Ed</title>
+  <meta name="description" content="Saarthi — ML-powered early warning system that predicts student dropout risk in Indian higher education institutions. Built for Avishkar 2026 at Pillai HOC College.">
+  <meta name="keywords" content="Saarthi, Dropout Risk, Machine Learning, Indian Higher Education, Pillai HOC College, Avishkar 2026, Early Warning System, scikit-learn, Streamlit, Student Analytics, NEP 2020">
   <meta name="author" content="Nia">
 
+  <!-- Favicon: Bold yellow 'S' on solid black background -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231A1A1A'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-family='monospace' font-weight='700' font-size='68' fill='%23FFBD2E'>S</text></svg>">
+
   <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="DROPOUT RISK — ML Early Warning System">
-  <meta property="og:description" content="Predicting student dropout risk in Indian higher education institutions using Gradient Boosting and Explainable AI.">
+  <meta property="og:title" content="SAARTHI — ML Early Warning System">
+  <meta property="og:description" content="Saarthi — Predicting student dropout risk in Indian higher education institutions using Gradient Boosting and Explainable AI.">
   <meta property="og:type" content="website">
 
   <!-- Google Fonts: Space Mono -->
@@ -53,7 +56,7 @@
     }
 
     html {
-      scroll-behavior: smooth;
+      scroll-behavior: auto;
       font-family: var(--font-mono);
       color: var(--text-main);
       background-color: var(--bg-desktop);
@@ -151,15 +154,15 @@
     .nav-links-container {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       list-style: none;
     }
 
     .nav-link-item a {
       color: #DDD;
       text-decoration: none;
-      padding: 6px 12px;
-      font-size: 12px;
+      padding: 6px 10px;
+      font-size: 11.5px;
       font-weight: 700;
       text-transform: uppercase;
       border: 1px solid transparent;
@@ -237,7 +240,8 @@
       border: 1px solid #555;
       color: #fff;
       padding: 4px 10px;
-      font-size: 14px;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
       font-family: var(--font-mono);
     }
@@ -260,7 +264,7 @@
     .desktop-shortcuts-bar {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 12px;
       padding: 10px 14px;
       background: rgba(255, 255, 255, 0.4);
       border: 2px dashed #7a9ea3;
@@ -275,7 +279,7 @@
       color: #24464c;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-right: 8px;
+      margin-right: 4px;
     }
 
     .desktop-shortcut-link {
@@ -300,7 +304,7 @@
     }
 
     /* ==========================================================================
-       RETRO OS WINDOW COMPONENT
+       RETRO OS WINDOW COMPONENT (WITH HOVER LIFT EFFECT)
        ========================================================================== */
     .os-window {
       background-color: var(--window-bg);
@@ -308,6 +312,12 @@
       box-shadow: var(--shadow-solid);
       position: relative;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: default;
+    }
+
+    .os-window:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-solid-lg);
     }
 
     .os-window:focus-within,
@@ -315,19 +325,31 @@
       box-shadow: var(--shadow-solid-lg);
     }
 
-    /* Staggered Desktop Offsets for Real OS Feel */
+    /* Staggered Desktop Offsets with Coordinated Hover Lifts */
     @media (min-width: 900px) {
       .window-offset-left {
         margin-right: 40px;
         transform: rotate(-0.15deg);
       }
+      .window-offset-left:hover {
+        transform: translate(-2px, -2px) rotate(-0.15deg);
+        box-shadow: var(--shadow-solid-lg);
+      }
       .window-offset-right {
         margin-left: 40px;
         transform: rotate(0.15deg);
       }
+      .window-offset-right:hover {
+        transform: translate(-2px, -2px) rotate(0.15deg);
+        box-shadow: var(--shadow-solid-lg);
+      }
       .window-offset-center {
         max-width: 1100px;
         margin: 0 auto;
+      }
+      .window-offset-center:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: var(--shadow-solid-lg);
       }
     }
 
@@ -1096,6 +1118,32 @@
     }
 
     /* ==========================================================================
+       WINDOW: NEP 2020 COMPLIANCE (NEP_COMPLIANCE.EXE)
+       ========================================================================== */
+    .nep-points-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nep-point-card {
+      border: 2px solid var(--border-dark);
+      padding: 18px 20px;
+      background: #FFFFFF;
+      box-shadow: var(--shadow-solid-sm);
+    }
+
+    .nep-point-header {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ==========================================================================
        WINDOW 6: FOOTER (CREDITS.TXT)
        ========================================================================== */
     .credits-content-layout {
@@ -1207,6 +1255,10 @@
         margin-right: 0;
         transform: none;
       }
+      .window-offset-left:hover,
+      .window-offset-right:hover {
+        transform: translate(-2px, -2px);
+      }
       .nav-links-container {
         display: none;
       }
@@ -1281,7 +1333,7 @@
     <div class="brand-section">
       <span class="system-badge">
         <span class="status-pulse"></span>
-        <span class="brand-title-text">DROPOUT RISK [v2.6]</span>
+        <span class="brand-title-text">SAARTHI [v2.6]</span>
       </span>
     </div>
 
@@ -1293,6 +1345,7 @@
         <li class="nav-link-item"><a href="#features" class="nav-jump">03. FEATURES</a></li>
         <li class="nav-link-item"><a href="#simulator" class="nav-jump">04. SIMULATOR</a></li>
         <li class="nav-link-item"><a href="#metrics" class="nav-jump">05. METRICS</a></li>
+        <li class="nav-link-item"><a href="#nep" class="nav-jump">06. NEP 2020</a></li>
       </ul>
     </nav>
 
@@ -1301,9 +1354,9 @@
       <span id="live-system-clock" class="clock-display" aria-live="off">--:--:-- IST</span>
       <a href="https://dropout-risk-system.streamlit.app" target="_blank" rel="noopener noreferrer" class="top-cta-btn" id="top-nav-dashboard-btn">
         <span>VIEW DASHBOARD</span>
-        <span>↗</span>
+        <span>-></span>
       </a>
-      <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Toggle menu">☰</button>
+      <button id="mobile-menu-btn" class="mobile-menu-toggle" aria-label="Toggle menu">MENU</button>
     </div>
   </header>
 
@@ -1314,9 +1367,10 @@
     <a href="#features" class="mobile-jump">03 / KEY FEATURES</a>
     <a href="#simulator" class="mobile-jump">04 / RISK SIMULATOR</a>
     <a href="#metrics" class="mobile-jump">05 / PROVEN METRICS</a>
-    <a href="#credits" class="mobile-jump">06 / PROJECT CREDITS</a>
-    <a href="https://dropout-risk-system.streamlit.app" target="_blank" rel="noopener noreferrer" style="color: var(--accent-yellow);">⚡ LAUNCH STREAMLIT APP ↗</a>
-    <a href="https://github.com/anewsevile/dropout_risk_prediction" target="_blank" rel="noopener noreferrer">🐙 GITHUB REPOSITORY ↗</a>
+    <a href="#nep" class="mobile-jump">06 / NEP 2020 ALIGNED</a>
+    <a href="#credits" class="mobile-jump">07 / PROJECT CREDITS</a>
+    <a href="https://dropout-risk-system.streamlit.app" target="_blank" rel="noopener noreferrer" style="color: var(--accent-yellow);">LAUNCH STREAMLIT APP -></a>
+    <a href="https://github.com/anewsevile/dropout_risk_prediction" target="_blank" rel="noopener noreferrer">GITHUB REPOSITORY -></a>
   </div>
 
   <!-- ==========================================================================
@@ -1326,15 +1380,16 @@
 
     <!-- Desktop Fast-Jump Shortcut Ribbon -->
     <section class="desktop-shortcuts-bar" aria-label="Desktop Shortcuts">
-      <span class="desktop-shortcuts-title">⚡ Desktop Shortcuts:</span>
-      <a href="#window-hero" class="desktop-shortcut-link">📂 intro.exe</a>
-      <a href="#problem" class="desktop-shortcut-link">⚠️ problem.exe</a>
-      <a href="#how-it-works" class="desktop-shortcut-link">⚙️ architecture.exe</a>
-      <a href="#features" class="desktop-shortcut-link">✨ features.exe</a>
-      <a href="#simulator" class="desktop-shortcut-link">🧪 simulator.exe</a>
-      <a href="#metrics" class="desktop-shortcut-link">📊 results.log</a>
-      <a href="#credits" class="desktop-shortcut-link">📝 credits.txt</a>
-      <a href="https://dropout-risk-system.streamlit.app" target="_blank" rel="noopener noreferrer" class="desktop-shortcut-link" style="background: var(--card-bg-yellow);">🌐 Live Streamlit ↗</a>
+      <span class="desktop-shortcuts-title">Desktop Shortcuts:</span>
+      <a href="#window-hero" class="desktop-shortcut-link">intro.exe</a>
+      <a href="#problem" class="desktop-shortcut-link">problem.exe</a>
+      <a href="#how-it-works" class="desktop-shortcut-link">architecture.exe</a>
+      <a href="#features" class="desktop-shortcut-link">features.exe</a>
+      <a href="#simulator" class="desktop-shortcut-link">simulator.exe</a>
+      <a href="#metrics" class="desktop-shortcut-link">results.log</a>
+      <a href="#nep" class="desktop-shortcut-link">nep_compliance.exe</a>
+      <a href="#credits" class="desktop-shortcut-link">credits.txt</a>
+      <a href="https://dropout-risk-system.streamlit.app" target="_blank" rel="noopener noreferrer" class="desktop-shortcut-link" style="background: var(--card-bg-yellow);">Live Streamlit -></a>
     </section>
 
     <!-- ========================================================================
@@ -1460,7 +1515,6 @@
         <!-- Stat Highlight Banner -->
         <div class="problem-stat-banner">
           <div class="stat-alert-title">
-            <span>🚨</span>
             <span>NATIONAL STATISTICAL BENCHMARK:</span>
           </div>
           <div class="stat-badge-pill">
@@ -1546,7 +1600,7 @@
         </div>
 
         <div class="pipeline-summary-bar">
-          <span>⚡ END-TO-END PIPELINE: RAW ACADEMIC LOGS → PROBABILISTIC SCORING → ACTIONABLE FACULTY MENTORING</span>
+          <span>END-TO-END PIPELINE: RAW ACADEMIC LOGS → PROBABILISTIC SCORING → ACTIONABLE FACULTY MENTORING</span>
           <a href="#simulator" class="desktop-shortcut-link" style="padding: 2px 8px; font-size: 11px;">TEST LIVE SIMULATION →</a>
         </div>
       </div>
@@ -1717,9 +1771,9 @@
             <!-- Quick Presets -->
             <div class="sim-presets-row">
               <span style="font-size: 11px; font-weight: 700; color: #444; width: 100%;">QUICK LOAD PRESETS:</span>
-              <button class="sim-preset-btn" onclick="applyPreset(42, 4.8, 4, 30)">⚠️ Student A (High Risk)</button>
-              <button class="sim-preset-btn" onclick="applyPreset(72, 6.6, 1, 75)">⚡ Student B (Borderline)</button>
-              <button class="sim-preset-btn" onclick="applyPreset(92, 8.8, 0, 95)">✅ Student C (Safe)</button>
+              <button class="sim-preset-btn" onclick="applyPreset(42, 4.8, 4, 30)">Student A (High Risk)</button>
+              <button class="sim-preset-btn" onclick="applyPreset(72, 6.6, 1, 75)">Student B (Borderline)</button>
+              <button class="sim-preset-btn" onclick="applyPreset(92, 8.8, 0, 95)">Student C (Safe)</button>
             </div>
           </div>
 
@@ -1732,7 +1786,7 @@
               </div>
 
               <div class="risk-score-display-box">
-                <div style="font-size: 11px; text-transform: uppercase; color: #AAA; margin-bottom: 4px;">CALCULATED DROPOUT RISK SCORE</div>
+                <div style="font-size: 11px; text-transform: uppercase; color: #AAA; margin-bottom: 4px;">CALCULATED RISK SCORE</div>
                 <div class="sim-score-num" id="sim-score-value" style="color: var(--accent-red);">78</div>
                 <div class="sim-score-status" id="sim-score-tier" style="background: var(--accent-red); color: #000;">HIGH RISK TIER</div>
               </div>
@@ -1745,7 +1799,7 @@
 
             <!-- Explainability Diagnostics -->
             <div class="sim-explanation-box">
-              <div class="sim-explanation-title">🤖 AI EXPLAINABILITY & RECOMMENDATION</div>
+              <div class="sim-explanation-title">AI EXPLAINABILITY & RECOMMENDATION</div>
               <p id="sim-ai-reasoning" style="margin-bottom: 8px;">
                 Low attendance (58%) combined with 3 backlogs and critical assignment delinquency (45%) significantly elevates dropout probability.
               </p>
@@ -1827,6 +1881,67 @@
     </article>
 
     <!-- ========================================================================
+         WINDOW: NEP 2020 COMPLIANCE (NEP_COMPLIANCE.EXE)
+         ======================================================================== -->
+    <article class="os-window window-offset-left" id="nep" tabindex="0">
+      <header class="window-titlebar">
+        <div class="window-titlebar-left">
+          <div class="window-controls-dots">
+            <span class="dot dot-close" title="Close" onclick="showToast('Window pinned to desktop')"></span>
+            <span class="dot dot-minimize" title="Minimize" onclick="toggleWindow('nep')"></span>
+            <span class="dot dot-maximize" title="Maximize"></span>
+          </div>
+          <h2 class="window-title">nep_compliance.exe</h2>
+        </div>
+        <div class="window-titlebar-right">
+          <button class="window-btn-action" onclick="toggleWindow('nep')">_</button>
+          <span>POLICY_ALIGNMENT</span>
+        </div>
+      </header>
+
+      <div class="window-body" id="nep-body">
+        <h2 class="section-headline">
+          <span class="headline-prefix">///</span> NEP 2020 Aligned
+        </h2>
+        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;">
+          Saarthi's early intervention model directly supports NEP 2020's goals of reducing student dropout rates and enabling personalized, data-driven academic support.
+        </p>
+
+        <div class="nep-points-container">
+          <div class="nep-point-card">
+            <div class="nep-point-header">
+              <span class="card-header-badge yellow" style="margin-bottom: 0;">01</span>
+              <span>Reducing Dropout Rates</span>
+            </div>
+            <p class="card-desc">
+              NEP 2020 identifies student attrition as a critical challenge in Indian higher education. Saarthi enables early identification of at-risk students, shifting institutions from reactive to proactive intervention.
+            </p>
+          </div>
+
+          <div class="nep-point-card">
+            <div class="nep-point-header">
+              <span class="card-header-badge cyan" style="margin-bottom: 0;">02</span>
+              <span>Holistic, Individualized Support</span>
+            </div>
+            <p class="card-desc">
+              Rather than a one-size-fits-all approach, Saarthi's SHAP-based explainability surfaces the specific factors behind each student's risk, enabling personalized mentoring rather than blanket policies.
+            </p>
+          </div>
+
+          <div class="nep-point-card">
+            <div class="nep-point-header">
+              <span class="card-header-badge green" style="margin-bottom: 0;">03</span>
+              <span>Technology-Enabled Institutional Decision-Making</span>
+            </div>
+            <p class="card-desc">
+              NEP 2020 emphasizes data-driven governance in education. Saarthi's HOD Summary Reports and department-wise analytics equip academic leadership with actionable, real-time insights.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- ========================================================================
          WINDOW 6 — FOOTER & CREDITS
          ======================================================================== -->
     <footer class="os-window window-offset-center" id="credits" tabindex="0">
@@ -1867,7 +1982,7 @@
           </div>
 
           <div>
-            <a href="#" class="back-to-top-btn" id="btn-back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
+            <a href="#os-top-bar" class="back-to-top-btn" id="btn-back-to-top">
               <span>▲ BACK TO TOP</span>
             </a>
           </div>
@@ -1877,7 +1992,7 @@
 
     <!-- Bottom Retro OS Stamp -->
     <div class="os-footer-status">
-      DROPOUT RISK OS // RETRO BRUTALIST INTERFACE // AVISHKAR INNOVATION RESEARCH INITIATIVE 2026
+      SAARTHI // AVISHKAR 2026 // PILLAI HOC COLLEGE
     </div>
 
   </main>
@@ -1988,7 +2103,7 @@
     function showToast(msg) {
       const toast = document.getElementById('system-toast');
       if (!toast) return;
-      toast.textContent = '⚡ ' + msg;
+      toast.textContent = msg;
       toast.classList.add('show');
       if (toastTimeout) clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => {
