@@ -48,11 +48,17 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
 
-    /* Sidebar Styling */
+    /* Sidebar Styling — Subtle Glass */
     [data-testid="stSidebar"] {
-        background-color: #FFFFF0 !important;
-        border-right: 2.5px solid #1A1A1A !important;
-    }
+        background-color: rgba(255, 255, 255, 0.16) !important;
+        background-image:
+            linear-gradient(rgba(26, 26, 26, 0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(26, 26, 26, 0.06) 1px, transparent 1px) !important;
+        background-size: 24px 24px !important;
+        border-right: 1.5px solid rgba(26, 26, 26, 0.45) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+}
     [data-testid="stSidebar"] .stRadio label {
         background-color: #FFFFFF;
         border: 2px solid #1A1A1A;
@@ -156,28 +162,30 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* Streamlit Container (Card) Styling */
+    /* Streamlit Container — Subtle Glass */
 
-    [data-testid="stVerticalBlockBorderWrapper"] 
-    {
-        border: 2.5px solid #1A1A1A !important;
-        border-radius: 4px !important;
-        background-color: #FFFFFF !important;
-        background-image: 
-            linear-gradient(rgba(26, 26, 26, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(26, 26, 26, 0.05) 1px, transparent 1px) !important;
-        background-size: 20px 20px !important;
-        box-shadow: 4px 4px 0px #1A1A1A !important;
-        overflow: hidden !important;
-        margin-bottom: 1.25rem !important;
-    }
+   [data-testid="stVerticalBlockBorderWrapper"] {
+        border: 1px solid rgba(26, 26, 26, 0.28) !important;
+        border-radius: 14px !important;
 
-    [data-testid="stVerticalBlockBorderWrapper"] > 
-    div {
+        background-color: rgba(255, 255, 255, 0.20) !important;
+        background-image: none !important;
+
+        backdrop-filter: blur(10px) saturate(115%) !important;
+        -webkit-backdrop-filter: blur(10px) saturate(115%) !important;
+
+        box-shadow:
+            0 8px 24px rgba(26, 26, 26, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+
+    overflow: hidden !important;
+    margin-bottom: 1.25rem !important;
+}
+
+    [data-testid="stVerticalBlockBorderWrapper"] > div {
         background-color: transparent !important;
         background-image: none !important;
-    }
-
+}
     /* Neubrutalist Stat Cards */
     .stat-card {
         border: 2.5px solid #1A1A1A;
