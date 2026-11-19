@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard — SAARTHI Early Warning System</title>
+  <meta name="description" content="Teacher & Faculty Dashboard for SAARTHI Student Dropout Risk Prediction System.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%231A1A1A'/><text x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-family='monospace' font-weight='700' font-size='68' fill='%23FFBD2E'>S</text></svg>">
+
+  <!-- Google Fonts: Space Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+  <script>
+    // Prevent theme flicker on load by applying saved theme immediately
+    (function() {
+      const savedTheme = localStorage.getItem('saarthi_theme');
+      if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <style>
+    /* ==========================================================================
+       RESET & NEO-BRUTALIST DESIGN SYSTEM (LIGHT & DARK THEMES)
+       ========================================================================== */
+    :root {
+      --bg-desktop: #B8DDE1;
+      --bg-dots: #96c0c7;
+      --window-bg: #FFFFFF;
+      --card-bg-alt: #F4F7F6;
+      --card-bg-yellow: #FFF9E6;
+      --card-bg-red: #FFF0F0;
+      --card-bg-green: #F0FFF4;
+      --card-bg-cyan: #E8FCFA;
+      --card-bg-purple: #F3E8FF;
+      --text-main: #1A1A1A;
+      --text-muted: #555555;
+      --titlebar-bg: #1A1A1A;
+      --titlebar-text: #FFFFFF;
+      --border-dark: #1A1A1A;
+      --sidebar-bg: #FAFCFC;
+      --sidebar-border: #1A1A1A;
+      --accent-yellow: #FFBD2E;
+      --accent-red: #FF5F57;
+      --accent-green: #28CA41;
+      --accent-cyan: #3FE0D0;
+      --accent-purple: #C084FC;
+      --shadow-hard: 4px 4px 0px #1A1A1A;
+      --shadow-hard-lg: 6px 6px 0px #1A1A1A;
+      --shadow-hard-sm: 2px 2px 0px #1A1A1A;
+      --font-mono: 'Space Mono', monospace, Consolas, 'Courier New';
+    }
+
+    [data-theme="dark"] {
+      --bg-desktop: #0F171A;
+      --bg-dots: #1E2E34;
+      --window-bg: #161D24;
+      --card-bg-alt: #202933;
+      --card-bg-yellow: #262112;
+      --card-bg-red: #2D1414;
+      --card-bg-green: #122B18;
+      --card-bg-cyan: #0E282A;
+      --card-bg-purple: #231633;
+      --text-main: #F1F5F9;
+      --text-muted: #94A3B8;
+      --titlebar-bg: #090D12;
+      --titlebar-text: #F1F5F9;
+      --border-dark: #000000;
+      --sidebar-bg: #12181F;
+      --sidebar-border: #000000;
+      --shadow-hard: 4px 4px 0px #000000;
+      --shadow-hard-lg: 6px 6px 0px #000000;
+      --shadow-hard-sm: 2px 2px 0px #000000;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      background-color: var(--bg-desktop);
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    body {
+      background-color: var(--bg-desktop);
+      background-image: radial-gradient(var(--bg-dots) 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.45;
+    }
+
+    ::selection {
+      background-color: var(--accent-yellow);
+      color: #000000;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-desktop);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--titlebar-bg);
+      border: 1px solid var(--border-dark);
+    }
+
+    /* ==========================================================================
+       TOP OS TASKBAR
+       ========================================================================== */
+    #os-top-bar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background-color: var(--titlebar-bg);
+      color: var(--titlebar-text);
+      border-bottom: 2px solid var(--border-dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      height: 44px;
+      font-size: 12.5px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .system-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #262626;
+      padding: 2px 8px;
+      border: 1.5px solid #444;
+      font-size: 11px;
+    }
+
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 6px var(--accent-green);
+      animation: pulseAnim 2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .top-bar-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .clock-display {
+      font-size: 11.5px;
+      background: #242424;
+      padding: 3px 8px;
+      border: 1px solid #444;
+      color: #FFF;
+      text-align: center;
+    }
+
+    .theme-toggle-btn {
+      background: var(--accent-yellow);
+      color: #000;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 11px;
+      padding: 4px 10px;
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--shadow-hard-sm);
+      cursor: pointer;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.1s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: #ffc74a;
+      transform: translate(-1px, -1px);
+    }
+
+    /* ==========================================================================
+       DASHBOARD MAIN CONTAINER & RETRO WINDOW
+       ========================================================================== */
+    .dashboard-container {
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px 14px 40px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .os-window {
+      background-color: var(--window-bg);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--shadow-hard-lg);
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 120px);
+    }
+
+    /* Window Titlebar */
+    .window-titlebar {
+      background-color: var(--titlebar-bg);
+      color: var(--titlebar-text);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      border-bottom: 2px solid var(--border-dark);
+    }
+
+    .window-titlebar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .window-controls-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.3);
+      display: inline-block;
+    }
+
+    .dot-close { background-color: var(--accent-red); }
+    .dot-minimize { background-color: var(--accent-yellow); }
+    .dot-maximize { background-color: var(--accent-green); }
+
+    .window-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    /* ==========================================================================
+       DASHBOARD BODY: SIDEBAR + MAIN CONTENT LAYOUT
+       ========================================================================== */
+    .dashboard-layout {
+      display: flex;
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* --------------------------------------------------------------------------
+       1. COLLAPSIBLE LEFT SIDEBAR
+       -------------------------------------------------------------------------- */
+    .dashboard-sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      border-right: 2px solid var(--sidebar-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 12px;
+      transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1), padding 0.2s ease;
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .dashboard-sidebar.is-collapsed {
+      width: 68px;
+      padding: 14px 8px;
+    }
+
+    .sidebar-top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      border-bottom: 2px dashed #AAA;
+      gap: 6px;
+    }
+
+    .sidebar-title-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .dashboard-sidebar.is-collapsed .sidebar-title-text {
+      display: none;
+    }
+
+    .sidebar-toggle-btn {
+      background: var(--titlebar-bg);
+      color: var(--titlebar-text);
+      border: 1.5px solid var(--border-dark);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      width: 28px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border-dark);
+      flex-shrink: 0;
+      transition: transform 0.1s ease;
+    }
+
+    .sidebar-toggle-btn:hover {
+      background: #333;
+      transform: translate(-1px, -1px);
+    }
+
+    /* 2. SIDEBAR NAVIGATION BLOCKS (DISTINCT PALETTE COLORS) */
+    .sidebar-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-block-btn {
+      width: 100%;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 12px;
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--shadow-hard-sm);
+      cursor: pointer;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.1s ease;
+      background: #FFFFFF;
+      color: #1A1A1A;
+      position: relative;
+    }
+
+    .dashboard-sidebar.is-collapsed .nav-block-btn {
+      padding: 10px 6px;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .nav-block-btn .nav-btn-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dashboard-sidebar.is-collapsed .nav-block-btn .nav-btn-text {
+      display: none;
+    }
+
+    .nav-block-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0px var(--border-dark);
+    }
+
+    .nav-block-btn.active {
+      box-shadow: 4px 4px 0px var(--border-dark);
+      outline: 2px solid var(--border-dark);
+    }
+
+    /* Colored Nav Block Variations */
+    .nav-block-overview {
+      background-color: var(--accent-yellow);
+      color: #000;
+    }
+    .nav-block-roster {
+      background-color: var(--accent-cyan);
+      color: #000;
+    }
+    .nav-block-reports {
+      background-color: var(--accent-green);
+      color: #000;
+    }
+    .nav-block-settings {
+      background-color: var(--accent-purple);
+      color: #000;
+    }
+
+    /* 3. LOGOUT BUTTON (AT VERY BOTTOM OF SIDEBAR) */
+    .sidebar-bottom-section {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 2px dashed #AAA;
+    }
+
+    .sidebar-logout-btn {
+      width: 100%;
+      background-color: var(--accent-red);
+      color: #000000;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 12px;
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--shadow-hard-sm);
+      cursor: pointer;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.1s ease;
+    }
+
+    .sidebar-logout-btn:hover {
+      background-color: #ff756f;
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0px var(--border-dark);
+    }
+
+    .dashboard-sidebar.is-collapsed .sidebar-logout-btn {
+      padding: 10px 4px;
+      font-size: 14px;
+    }
+    .dashboard-sidebar.is-collapsed .sidebar-logout-btn .logout-text {
+      display: none;
+    }
+
+    /* --------------------------------------------------------------------------
+       4. MAIN CONTENT AREA
+       -------------------------------------------------------------------------- */
+    .dashboard-main-content {
+      flex: 1;
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      background: var(--window-bg);
+    }
+
+    /* Top Greeting Banner */
+    .greeting-header-card {
+      background: var(--card-bg-yellow);
+      border: 2px solid var(--border-dark);
+      border-left: 6px solid var(--accent-yellow);
+      padding: 14px 18px;
+      box-shadow: var(--shadow-hard);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .greeting-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .greeting-title {
+      font-size: clamp(20px, 3.2vw, 26px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      text-transform: uppercase;
+    }
+
+    .greeting-subtext {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .greeting-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .faculty-badge-chip {
+      background: var(--titlebar-bg);
+      color: var(--titlebar-text);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border: 1px solid var(--border-dark);
+      text-transform: uppercase;
+    }
+
+    /* Quick Telemetry Bar */
+    .telemetry-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .telemetry-box {
+      background: var(--card-bg-alt);
+      border: 2px solid var(--border-dark);
+      padding: 10px 14px;
+      box-shadow: var(--shadow-hard-sm);
+    }
+    .telemetry-box.accent-cyan { border-top: 4px solid var(--accent-cyan); }
+    .telemetry-box.accent-green { border-top: 4px solid var(--accent-green); }
+    .telemetry-box.accent-yellow { border-top: 4px solid var(--accent-yellow); }
+
+    .telemetry-box-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .telemetry-box-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* 5. MAIN CONTENT TOOL CARDS (ASYMMETRICAL 58% / 42%) */
+    .tools-action-grid {
+      display: grid;
+      grid-template-columns: 1.18fr 0.82fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .tools-action-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tool-card {
+      background: var(--card-bg-alt);
+      border: 2px solid var(--border-dark);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-hard);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .tool-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-hard-lg);
+    }
+
+    .tool-card.card-streamlit {
+      border-top: 6px solid var(--accent-cyan);
+    }
+
+    .tool-card.card-simulator {
+      border-top: 6px solid var(--accent-yellow);
+    }
+
+    .tool-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .tool-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border: 1px solid var(--border-dark);
+      text-transform: uppercase;
+    }
+    .tool-badge.cyan { background: var(--accent-cyan); color: #000; }
+    .tool-badge.yellow { background: var(--accent-yellow); color: #000; }
+    .tool-badge.green { background: var(--accent-green); color: #000; }
+    .tool-badge.purple { background: var(--accent-purple); color: #000; }
+
+    .tool-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .tool-card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .brutalist-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 14px;
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--shadow-hard-sm);
+      transition: all 0.1s ease;
+    }
+
+    .brutalist-btn-primary {
+      background-color: var(--titlebar-bg);
+      color: #FFFFFF;
+    }
+    .brutalist-btn-primary:hover {
+      background-color: #333;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border-dark);
+    }
+
+    .brutalist-btn-yellow {
+      background-color: var(--accent-yellow);
+      color: #000000;
+    }
+    .brutalist-btn-yellow:hover {
+      background-color: #ffc74a;
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border-dark);
+    }
+
+    /* Tab Panels */
+    .tab-content-panel {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .tab-content-panel.is-active-tab {
+      display: flex;
+    }
+
+    /* Tab Placeholder Cards */
+    .placeholder-panel-card {
+      background: var(--card-bg-alt);
+      border: 2px solid var(--border-dark);
+      padding: 20px;
+      box-shadow: var(--shadow-hard);
+    }
+
+    /* Simple Table for Roster Preview */
+    .brutalist-table-wrapper {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .brutalist-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      text-align: left;
+    }
+
+    .brutalist-table th {
+      background: var(--titlebar-bg);
+      color: var(--titlebar-text);
+      padding: 8px 10px;
+      border: 1px solid var(--border-dark);
+      text-transform: uppercase;
+    }
+
+    .brutalist-table td {
+      padding: 8px 10px;
+      border: 1px solid var(--border-dark);
+      background: var(--window-bg);
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: 1px solid var(--border-dark);
+    }
+    .status-pill.high { background: var(--accent-red); color: #000; }
+    .status-pill.moderate { background: var(--accent-yellow); color: #000; }
+    .status-pill.safe { background: var(--accent-green); color: #000; }
+
+    /* Loading Screen */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-desktop);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      font-size: 13px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading State -->
+  <div id="loading-screen">
+    <div class="os-window" style="padding: 18px 24px; text-align: center; border: 2px solid #000; box-shadow: 6px 6px 0px #000;">
+      <span class="status-pulse" style="margin-bottom: 8px;"></span>
+      <div style="font-size: 12.5px;">AUTHENTICATING FACULTY SESSION...</div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       TOP OS TASKBAR
+       ========================================================================== -->
+  <header id="os-top-bar">
+    <div class="brand-section">
+      <span class="system-badge">
+        <span class="status-pulse"></span>
+        <span>SAARTHI [v2.6]</span>
+      </span>
+      <span style="color: var(--accent-green); font-size: 11px; font-weight: 700;">TEACHER PORTAL</span>
+    </div>
+
+    <div class="top-bar-controls">
+      <!-- Requirement 7: Dark Mode Toggle Button in Top-Right Area -->
+      <button id="dark-mode-toggle" class="theme-toggle-btn" title="Toggle Light/Dark Theme">
+        <span id="theme-toggle-icon">☀</span>
+        <span id="theme-toggle-label">MODE: LIGHT</span>
+      </button>
+
+      <span id="live-clock" class="clock-display">--:--:-- IST</span>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MAIN DASHBOARD WINDOW
+       ========================================================================== -->
+  <main class="dashboard-container">
+    <article class="os-window">
+      <header class="window-titlebar">
+        <div class="window-titlebar-left">
+          <div class="window-controls-dots">
+            <span class="dot dot-close"></span>
+            <span class="dot dot-minimize"></span>
+            <span class="dot dot-maximize"></span>
+          </div>
+          <span class="window-title">teacher_dashboard.exe [SESSION_ACTIVE]</span>
+        </div>
+        <div style="font-size: 11px; color: #AAA;">
+          <span>PID: 4092 // PILLAI HOC</span>
+        </div>
+      </header>
+
+      <div class="dashboard-layout">
+        <!-- ====================================================================
+             1. COLLAPSIBLE LEFT SIDEBAR
+             ==================================================================== -->
+        <aside class="dashboard-sidebar" id="dashboard-sidebar" aria-label="Faculty Navigation">
+          <div>
+            <!-- Sidebar Header with Collapse Toggle Button (Requirement 1) -->
+            <div class="sidebar-top-header">
+              <span class="sidebar-title-text">SECTIONS</span>
+              <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" title="Toggle Sidebar [Collapse / Expand]" aria-label="Toggle Sidebar">
+                <span id="sidebar-toggle-icon">◀</span>
+              </button>
+            </div>
+
+            <!-- Distinct Colored Navigation Blocks (Requirement 2) -->
+            <ul class="sidebar-nav-list">
+              <li>
+                <button class="nav-block-btn nav-block-overview active" data-tab="overview" title="Overview">
+                  <span>[01]</span>
+                  <span class="nav-btn-text">Overview</span>
+                </button>
+              </li>
+              <li>
+                <button class="nav-block-btn nav-block-roster" data-tab="roster" title="Student Roster">
+                  <span>[02]</span>
+                  <span class="nav-btn-text">Student Roster</span>
+                </button>
+              </li>
+              <li>
+                <button class="nav-block-btn nav-block-reports" data-tab="reports" title="Risk Reports">
+                  <span>[03]</span>
+                  <span class="nav-btn-text">Risk Reports</span>
+                </button>
+              </li>
+              <li>
+                <button class="nav-block-btn nav-block-settings" data-tab="settings" title="Settings">
+                  <span>[04]</span>
+                  <span class="nav-btn-text">Settings</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Bottom Separated Log Out Button (Requirement 3) -->
+          <div class="sidebar-bottom-section">
+            <button id="sidebar-logout-btn" class="sidebar-logout-btn" title="Sign out of teacher session">
+              <span>⏻</span>
+              <span class="logout-text">LOG OUT</span>
+            </button>
+          </div>
+        </aside>
+
+        <!-- ====================================================================
+             4. MAIN CONTENT AREA
+             ==================================================================== -->
+        <section class="dashboard-main-content">
+          <!-- Personalized Greeting Banner (Requirement 4) -->
+          <div class="greeting-header-card">
+            <div class="greeting-left">
+              <h1 class="greeting-title">
+                Hello, <span id="teacher-greeting-name">Teacher</span>
+              </h1>
+              <div class="greeting-subtext">
+                <span id="teacher-email-display">Authenticating account...</span>
+                <span>•</span>
+                <span>Semester 1 Intervention Cycle Active</span>
+              </div>
+            </div>
+
+            <div class="greeting-right-actions">
+              <span class="faculty-badge-chip">FACULTY COUNSELOR</span>
+            </div>
+          </div>
+
+          <!-- TAB 1: OVERVIEW PANEL (Default Active View) -->
+          <div id="panel-overview" class="tab-content-panel is-active-tab">
+            <!-- Telemetry Benchmark Strip -->
+            <div class="telemetry-strip">
+              <div class="telemetry-box accent-cyan">
+                <div class="telemetry-box-label">Early-Warning PR-AUC</div>
+                <div class="telemetry-box-value" style="color: var(--accent-cyan);">94.13%</div>
+              </div>
+              <div class="telemetry-box accent-green">
+                <div class="telemetry-box-label">Precision@30 (Top Risk)</div>
+                <div class="telemetry-box-value" style="color: var(--accent-green);">100.0% (30/30)</div>
+              </div>
+              <div class="telemetry-box accent-yellow">
+                <div class="telemetry-box-label">High-Risk Recall</div>
+                <div class="telemetry-box-value" style="color: var(--accent-yellow);">89.79%</div>
+              </div>
+            </div>
+
+            <!-- Requirement 5: Existing Streamlit and Simulator Cards -->
+            <div class="tools-action-grid">
+              <!-- Card 1: Institutional Streamlit Portal -->
+              <div class="tool-card card-streamlit">
+                <div>
+                  <div class="tool-card-header">
+                    <span class="tool-badge cyan">PRIMARY PORTAL</span>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">HOSTED APP</span>
+                  </div>
+                  <h2 class="tool-card-title">Institutional Streamlit Portal</h2>
+                  <p class="tool-card-desc">
+                    Batch upload student CSV datasets, generate automated HOD summary reports, and explore SHAP explainability matrices across cohorts.
+                  </p>
+                </div>
+                <a href="https://dropout-risk-system.streamlit.app" target="_blank" rel="noopener noreferrer" class="brutalist-btn brutalist-btn-primary">
+                  <span>LAUNCH STREAMLIT APP</span>
+                  <span>↗</span>
+                </a>
+              </div>
+
+              <!-- Card 2: Risk Score Simulator -->
+              <div class="tool-card card-simulator">
+                <div>
+                  <div class="tool-card-header">
+                    <span class="tool-badge yellow">INTERACTIVE</span>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">CLIENT ENGINE</span>
+                  </div>
+                  <h2 class="tool-card-title">Risk Score Simulator</h2>
+                  <p class="tool-card-desc">
+                    Adjust student attendance %, cumulative backlogs, and assignment completion rates to dynamically simulate faculty intervention playbooks.
+                  </p>
+                </div>
+                <a href="index.html#simulator" class="brutalist-btn brutalist-btn-yellow">
+                  <span>OPEN SIMULATOR -></span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Quick Recent Flagged Students Card -->
+            <div class="placeholder-panel-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 13px; font-weight: 700; text-transform: uppercase;">Recent High-Risk Early Warnings (Semester 1)</span>
+                <span class="tool-badge green">LIVE INFERENCE</span>
+              </div>
+              <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 10px;">
+                Students flagged with highest dropout probability requiring mentor counseling within 48 hours:
+              </p>
+              <div class="brutalist-table-wrapper">
+                <table class="brutalist-table">
+                  <thead>
+                    <tr>
+                      <th>Student ID</th>
+                      <th>Attendance</th>
+                      <th>1st Sem Approved</th>
+                      <th>Tuition Status</th>
+                      <th>Risk Score</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>#STU-2026-084</td>
+                      <td>42%</td>
+                      <td>1 / 6 units</td>
+                      <td>Pending</td>
+                      <td><span class="status-pill high">94 (CRITICAL)</span></td>
+                      <td><button class="brutalist-btn" style="padding: 2px 6px; font-size: 10px;" onclick="alert('Mentor check-in notification sent to counselor desk.')">NOTIFY MENTOR</button></td>
+                    </tr>
+                    <tr>
+                      <td>#STU-2026-119</td>
+                      <td>58%</td>
+                      <td>2 / 6 units</td>
+                      <td>Up to date</td>
+                      <td><span class="status-pill high">78 (HIGH)</span></td>
+                      <td><button class="brutalist-btn" style="padding: 2px 6px; font-size: 10px;" onclick="alert('Remedial schedule assigned.')">ASSIGN REMEDIAL</button></td>
+                    </tr>
+                    <tr>
+                      <td>#STU-2026-203</td>
+                      <td>74%</td>
+                      <td>4 / 6 units</td>
+                      <td>Up to date</td>
+                      <td><span class="status-pill moderate">52 (MODERATE)</span></td>
+                      <td><button class="brutalist-btn" style="padding: 2px 6px; font-size: 10px;" onclick="alert('Monitoring flag refreshed.')">LOG CHECK-IN</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: STUDENT ROSTER (Placeholder Panel) -->
+          <div id="panel-roster" class="tab-content-panel">
+            <div class="placeholder-panel-card" style="border-left: 6px solid var(--accent-cyan);">
+              <div class="tool-card-header">
+                <span class="tool-badge cyan">STUDENT ROSTER</span>
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">COHORT DIRECTORY</span>
+              </div>
+              <h2 class="tool-card-title">Enrolled Students & Risk Registry</h2>
+              <p class="tool-card-desc">
+                Full department cohort directory with live filterable risk bands, backlog tracking, and attendance logs.
+              </p>
+              <div class="brutalist-table-wrapper">
+                <table class="brutalist-table">
+                  <thead>
+                    <tr>
+                      <th>Roll No</th>
+                      <th>Name</th>
+                      <th>Department</th>
+                      <th>Attendance</th>
+                      <th>CGPA</th>
+                      <th>Risk Band</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>CO-2026-01</td>
+                      <td>Aarav Sharma</td>
+                      <td>Computer Engineering</td>
+                      <td>88%</td>
+                      <td>8.4</td>
+                      <td><span class="status-pill safe">LOW (12)</span></td>
+                    </tr>
+                    <tr>
+                      <td>CO-2026-02</td>
+                      <td>Sneha Patil</td>
+                      <td>Information Tech</td>
+                      <td>61%</td>
+                      <td>5.8</td>
+                      <td><span class="status-pill moderate">MODERATE (56)</span></td>
+                    </tr>
+                    <tr>
+                      <td>CO-2026-03</td>
+                      <td>Rohan Gupta</td>
+                      <td>Computer Engineering</td>
+                      <td>44%</td>
+                      <td>4.2</td>
+                      <td><span class="status-pill high">HIGH (89)</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: RISK REPORTS (Placeholder Panel) -->
+          <div id="panel-reports" class="tab-content-panel">
+            <div class="placeholder-panel-card" style="border-left: 6px solid var(--accent-green);">
+              <div class="tool-card-header">
+                <span class="tool-badge green">RISK REPORTS</span>
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">ANALYTICS EXPORT</span>
+              </div>
+              <h2 class="tool-card-title">Department Risk & SHAP Factor Reports</h2>
+              <p class="tool-card-desc">
+                Generate and download formatted PDF & CSV summaries for Department Heads (HODs) and academic council reviews.
+              </p>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
+                <button class="brutalist-btn brutalist-btn-primary" onclick="alert('Exporting Semester 1 HOD Summary Report...')">
+                  EXPORT HOD REPORT (PDF) ->
+                </button>
+                <button class="brutalist-btn brutalist-btn-yellow" onclick="alert('Downloading Risk Matrix CSV...')">
+                  DOWNLOAD CSV REGISTRY ->
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: SETTINGS (Placeholder Panel) -->
+          <div id="panel-settings" class="tab-content-panel">
+            <div class="placeholder-panel-card" style="border-left: 6px solid var(--accent-purple);">
+              <div class="tool-card-header">
+                <span class="tool-badge purple">SETTINGS</span>
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted);">FACULTY PREFERENCES</span>
+              </div>
+              <h2 class="tool-card-title">Faculty Portal Configuration</h2>
+              <p class="tool-card-desc">
+                Customize alert thresholds, notification cadence for critical risk students, and linked college ERP integrations.
+              </p>
+              <div style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                → Alert Threshold: Risk Score &ge; 75 (High Priority SMS & Email Alerts)<br>
+                → Model Version: GradientBoosting v2.4 (Semester-1 Early Warning)<br>
+                → Data Privacy: DPDP Act 2023 & NEP 2020 Compliant
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <!-- ==========================================================================
+       FIREBASE AUTH & INTERACTIVE JAVASCRIPT LOGIC
+       ========================================================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import {
+      getAuth,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+    // 1. Firebase Configuration (Provided)
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-XtpEWHZgAL257BDDLSCnqYKqBr35kgk",
+      authDomain: "saarthi-23b30.firebaseapp.com",
+      projectId: "saarthi-23b30",
+      storageBucket: "saarthi-23b30.firebasestorage.app",
+      messagingSenderId: "615293632507",
+      appId: "1:615293632507:web:abac7d060ff83031c1555e",
+      measurementId: "G-PF28M2EF6X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loadingScreen = document.getElementById("loading-screen");
+    const teacherGreetingName = document.getElementById("teacher-greeting-name");
+    const teacherEmailDisplay = document.getElementById("teacher-email-display");
+    const sidebarLogoutBtn = document.getElementById("sidebar-logout-btn");
+
+    // 2. Auth State Listener (Requirement 4: Personalized Greeting)
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Pull teacher's display name if set, otherwise fallback to showing their email
+        const displayName = user.displayName ? user.displayName : (user.email || "Faculty Member");
+        if (teacherGreetingName) teacherGreetingName.textContent = displayName;
+        if (teacherEmailDisplay) teacherEmailDisplay.textContent = user.email || "";
+
+        if (loadingScreen) loadingScreen.style.display = "none";
+      } else {
+        // Not authenticated -> Redirect back to login page
+        window.location.href = "login.html";
+      }
+    });
+
+    // 3. Logout Action (Requirement 3)
+    async function handleLogout() {
+      try {
+        await signOut(auth);
+        window.location.href = "login.html";
+      } catch (error) {
+        console.error("Logout Error:", error);
+        alert("Failed to log out: " + error.message);
+      }
+    }
+
+    if (sidebarLogoutBtn) sidebarLogoutBtn.addEventListener("click", handleLogout);
+  </script>
+
+  <script>
+    // ==========================================================================
+    // SIDEBAR COLLAPSE TOGGLE LOGIC (Requirement 1)
+    // ==========================================================================
+    const sidebar = document.getElementById("dashboard-sidebar");
+    const sidebarToggleBtn = document.getElementById("sidebar-toggle-btn");
+    const sidebarToggleIcon = document.getElementById("sidebar-toggle-icon");
+
+    let isSidebarCollapsed = false;
+
+    if (sidebarToggleBtn && sidebar) {
+      sidebarToggleBtn.addEventListener("click", () => {
+        isSidebarCollapsed = !isSidebarCollapsed;
+        if (isSidebarCollapsed) {
+          sidebar.classList.add("is-collapsed");
+          sidebarToggleIcon.textContent = "▶";
+          sidebarToggleBtn.title = "Expand Sidebar";
+        } else {
+          sidebar.classList.remove("is-collapsed");
+          sidebarToggleIcon.textContent = "◀";
+          sidebarToggleBtn.title = "Collapse Sidebar";
+        }
+      });
+    }
+
+    // ==========================================================================
+    // SIDEBAR TAB SWITCHING LOGIC (Requirement 2)
+    // ==========================================================================
+    const navButtons = document.querySelectorAll(".nav-block-btn");
+    const tabPanels = {
+      overview: document.getElementById("panel-overview"),
+      roster: document.getElementById("panel-roster"),
+      reports: document.getElementById("panel-reports"),
+      settings: document.getElementById("panel-settings")
+    };
+
+    navButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tabKey = btn.getAttribute("data-tab");
+
+        // Set active state on button
+        navButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // Show matching content panel
+        Object.keys(tabPanels).forEach(key => {
+          if (tabPanels[key]) {
+            if (key === tabKey) {
+              tabPanels[key].classList.add("is-active-tab");
+            } else {
+              tabPanels[key].classList.remove("is-active-tab");
+            }
+          }
+        });
+      });
+    });
+
+    // ==========================================================================
+    // DARK MODE TOGGLE WITH LOCALSTORAGE PERSISTENCE (Requirement 7)
+    // ==========================================================================
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    const themeToggleIcon = document.getElementById("theme-toggle-icon");
+    const themeToggleLabel = document.getElementById("theme-toggle-label");
+
+    function syncThemeUI(theme) {
+      if (theme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        if (themeToggleIcon) themeToggleIcon.textContent = "🌙";
+        if (themeToggleLabel) themeToggleLabel.textContent = "MODE: DARK";
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+        if (themeToggleIcon) themeToggleIcon.textContent = "☀";
+        if (themeToggleLabel) themeToggleLabel.textContent = "MODE: LIGHT";
+      }
+    }
+
+    // Initialize UI on load
+    const currentTheme = localStorage.getItem("saarthi_theme") || "light";
+    syncThemeUI(currentTheme);
+
+    if (darkModeToggle) {
+      darkModeToggle.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "light";
+        const newTheme = current === "dark" ? "light" : "dark";
+        localStorage.setItem("saarthi_theme", newTheme);
+        syncThemeUI(newTheme);
+      });
+    }
+
+    // Real-Time System Clock (IST)
+    function updateClock() {
+      const now = new Date();
+      const options = {
+        timeZone: 'Asia/Kolkata',
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      };
+      try {
+        const timeString = new Intl.DateTimeFormat('en-GB', options).format(now);
+        const clockEl = document.getElementById('live-clock');
+        if (clockEl) clockEl.textContent = timeString + ' IST';
+      } catch (e) {
+        const fallback = now.toTimeString().split(' ')[0];
+        document.getElementById('live-clock').textContent = fallback;
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
