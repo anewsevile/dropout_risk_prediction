@@ -1359,7 +1359,7 @@ DATASET INGESTION SUMMARY: {total_rows} ROWS LOADED
                 show_html(f'''<div style="border:2px solid #1A1A1A; background:{cgpa_bg}; padding:10px; border-radius:4px; box-shadow:3px 3px 0 #1A1A1A;"><div style="font-size:0.72rem; font-weight:700; font-family:'Space Mono',monospace; color:#1A1A1A;">INVALID/BOUND CGPA</div><div style="font-size:1.5rem; font-weight:800; font-family:'Space Mono',monospace;">{inv_cgpa}</div></div>''')
             with col_s4:
                 bk_bg = "#FFE082" if (unparsed_bk + inv_bk) > 0 else "#FFFFFF"
-                show_html(f'''<div style="border:2px solid #1A1A1A; background:{bk_bg}; padding:10px; border-radius:4px; box-shadow:3px 3px 0 #1A1A1A;"><div style="font-size:0.72rem; font-weight:700; font-family:'Space Mono',monospace; color:#1A1A1A;">UNPARSED/INVALID BACKLOGS</div><div style="font-size:1.5rem; font-weight:800; font-family:'Space Mono',monospace;">{unparsed_bk + inv_bk} ({unparsed_bk} unparsed)</div></div>''')
+                show_html(f'''<div style="border:2px solid #1A1A1A; background:{bk_bg}; padding:10px; border-radius:4px; box-shadow:3px 3px 0 #1A1A1A;"><div style="font-size:0.72rem; font-weight:700; font-family:'Space Mono',monospace; color:#1A1A1A;">UNPARSED/INVALID BACKLOGS</div><div style="display:flex; align-items:baseline; gap:8px; white-space:nowrap;"><span style="font-size:1.5rem; font-weight:800; font-family:'Space Mono',monospace;">{unparsed_bk + inv_bk}</span><span style="font-size:0.72rem; font-weight:700; font-family:'Space Mono',monospace;">{unparsed_bk} unparsed</span></div></div>''')
             
             if excluded_scoring > 0:
                 show_html(textwrap.dedent(f"""\
