@@ -1117,7 +1117,7 @@ def calculate_top_factors_and_intervention(student_row):
     elif top_factor == 'attendance_percent':
         intervention = "Recommend attendance counseling"
     elif top_factor == 'backlogs':
-        intervention = "Recommend academic mentorship"
+        intervention = "Recommend academic support"
     elif top_factor == 'cgpa':
         intervention = "Recommend academic support program"
     else:
@@ -1791,7 +1791,7 @@ elif "Model Intelligence" in page:
             st.markdown("<h3 class='brutalist-title'>OFFLINE MODEL BENCHMARK (CALIBRATION BASELINE — NOT THIS COHORT)</h3>", unsafe_allow_html=True)
             show_html(textwrap.dedent("""\
 <div style="background-color: #FFF3C4; border: 2px solid #1A1A1A; border-radius: 4px; padding: 10px 14px; font-family: 'Space Mono', monospace; font-size: 0.76rem; font-weight: 700; color: #1A1A1A; margin-bottom: 16px; box-shadow: 2px 2px 0px #1A1A1A;">
-[BENCHMARK EVALUATION — NOT THIS COHORT]: The metrics below reflect the pre-trained model's performance on a held-out test split (20% unseen data) during training calibration. Because the teacher's uploaded file contains live operational data without ground-truth dropout outcome labels, accuracy and recall are not computed on the uploaded cohort.
+[BENCHMARK EVALUATION — NOT THIS COHORT]: The metrics below reflect the pre-trained model's performance on a held-out test split (20% unseen data) during training calibration. Because the uploaded file contains live operational data without ground-truth dropout outcome labels, accuracy and recall are not computed on the uploaded cohort.
 </div>
 """).strip())
 
@@ -1825,9 +1825,9 @@ elif "HOD Report" in page:
         render_page_top_bar("hod_report.exe", "hod", full_df)
 
         with st.container(border=True):
-            render_window_header("hod_audit.exe", "FACULTY_PORTAL")
+            render_window_header("hod_audit.exe", "HOD_REPORT")
             st.markdown("<h1 class='brutalist-title' style='margin-bottom:4px;'>HOD SUMMARY REPORT</h1>", unsafe_allow_html=True)
-            st.markdown("<p style='font-size: 0.85rem; font-family:\"Space Mono\", monospace; color: #555555; font-weight: 600; margin-bottom: 18px;'>DEPARTMENT-LEVEL AUDIT & FACULTY ESCALATION REGISTER</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 0.85rem; font-family:\"Space Mono\", monospace; color: #555555; font-weight: 600; margin-bottom: 18px;'>DEPARTMENT-LEVEL AUDIT & ESCALATION REGISTER</p>", unsafe_allow_html=True)
 
             dept_options = ["All Departments"] + sorted([str(d) for d in df['department'].unique() if pd.notna(d)])
             selected_dept = st.selectbox("SELECT DEPARTMENT", dept_options)
