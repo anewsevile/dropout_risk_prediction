@@ -1141,8 +1141,7 @@ NAV_OPTIONS = [
     "▲ Overview",
     "Student Risk Directory",
     "Individual Student Profile",
-    "Model Intelligence",
-    "HOD Report"
+    "Model Intelligence"
 ]
 
 page = st.sidebar.radio(
@@ -1818,16 +1817,16 @@ elif "Model Intelligence" in page:
 # =====================================================================
 # PAGE 5: HOD REPORT
 # =====================================================================
-elif "HOD Report" in page:
+elif "Department Report" in page:
     if df is None:
         render_empty_state_card("hod_report.exe")
     else:
         render_page_top_bar("hod_report.exe", "hod", full_df)
 
         with st.container(border=True):
-            render_window_header("hod_audit.exe", "HOD_REPORT")
-            st.markdown("<h1 class='brutalist-title' style='margin-bottom:4px;'>HOD SUMMARY REPORT</h1>", unsafe_allow_html=True)
-            st.markdown("<p style='font-size: 0.85rem; font-family:\"Space Mono\", monospace; color: #555555; font-weight: 600; margin-bottom: 18px;'>DEPARTMENT-LEVEL AUDIT & ESCALATION REGISTER</p>", unsafe_allow_html=True)
+            render_window_header("department_audit.exe", "DEPARTMENT_REPORT")
+            st.markdown("<h1 class='brutalist-title' style='margin-bottom:4px;'>DEPARTMENT SUMMARY REPORT</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 0.85rem; font-family:\"Space Mono\", monospace; color: #555555; font-weight: 600; margin-bottom: 18px;'>DEPARTMENT-LEVEL RISK SUMMARY</p>", unsafe_allow_html=True)
 
             dept_options = ["All Departments"] + sorted([str(d) for d in df['department'].unique() if pd.notna(d)])
             selected_dept = st.selectbox("SELECT DEPARTMENT", dept_options)
@@ -1888,7 +1887,7 @@ elif "HOD Report" in page:
                 pdf = FPDF()
                 pdf.add_page()
                 pdf.set_font("Helvetica", "B", 18)
-                pdf.cell(0, 12, "EARLY DROPOUT RISK - HOD SUMMARY REPORT", new_x="LMARGIN", new_y="NEXT")
+                pdf.cell(0, 12, "EARLY DROPOUT RISK - DEPARTMENT SUMMARY REPORT", new_x="LMARGIN", new_y="NEXT")
                 pdf.set_font("Helvetica", "", 11)
                 pdf.cell(0, 8, f"Department: {dept_name}", new_x="LMARGIN", new_y="NEXT")
                 pdf.ln(4)
@@ -1934,6 +1933,6 @@ elif "HOD Report" in page:
             st.download_button(
                 label="DOWNLOAD REPORT",
                 data=pdf_bytes,
-                file_name=f"HOD_Report_{selected_dept.replace(' ', '_')}.pdf",
+                file_name=f"Department_Report_{selected_dept.replace(' ', '_')}.pdf",
                 mime="application/pdf"
             )
