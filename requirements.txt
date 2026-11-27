@@ -7,4 +7,4 @@ fpdf2
 chardet
 openpyxl
 xlrd
-odfpygit add requirements.txt
+odfpy
